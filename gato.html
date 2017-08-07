@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gato</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://code.jquery.com/ui/jquery-ui-1-9-git.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/jquery-ui-1-9-git.css" />
+
+	
+    <style>
+
+    </style>
+
+</head>
+<body onLoad="nekostart()">
+
+<script>
+//document createElement getElementById getElementsByTagName appendChild() console.log()
+//function click
+
+//console.log();
+
+nkspd=30;
+
+
+var IE4=0,NN4=0,NN6=0;
+if(document.all){
+	IE4=true;
+}else if(document.layers){
+	NN4=true;
+}else if(document.getElementById){
+	NN6=true;
+}
+
+var vNum;vNum=Math.random();vNum=Math.round(vNum*2);
+
+//http://komica.yucie.net/cat/cursor2/awake.gif
+
+//fld2="cursor"+2+"/";
+fld2 = "http://komica.yucie.net/cat/cursor"+vNum+"/"
+if(IE4||NN6){
+	document.write('<DIV ID="jsneko" STYLE="position:absolute\;width:32\;height:32\;z-index:7\;left:0\;top:0">');
+	document.write('<img src='+fld2+'mati2.gif width=32 height=32 name="nyan"></DIV>');
+}
+if(NN4){document.write('<layer name="jsneko" top=0 left=0 z-index=7>');document.write('<img src='+fld2+'mati2.gif width=32 height=32></layer>');}
+
+nekoG=new Array();for(i=0;i<=38;i++){nekoG[i]=new Image();}
+nekoG[0].src=fld2+"mati2.gif";
+nekoG[1].src=fld2+"mati2.gif";
+nekoG[4].src=fld2+"up1.gif";
+nekoG[5].src=fld2+"up2.gif";
+nekoG[6].src=fld2+"down1.gif";
+nekoG[7].src=fld2+"down2.gif";
+nekoG[16].src=fld2+"left1.gif";
+nekoG[17].src=fld2+"left2.gif";
+nekoG[20].src=fld2+"upleft1.gif";
+nekoG[21].src=fld2+"upleft2.gif";
+nekoG[22].src=fld2+"dwleft1.gif";
+nekoG[23].src=fld2+"dwleft2.gif";
+nekoG[24].src=fld2+"right1.gif";
+nekoG[25].src=fld2+"right2.gif";
+nekoG[28].src=fld2+"upright1.gif";
+nekoG[29].src=fld2+"upright2.gif";
+nekoG[30].src=fld2+"dwright1.gif";
+nekoG[31].src=fld2+"dwright2.gif";
+nekoG[32].src=fld2+"awake.gif";
+nekoG[33].src=fld2+"jare2.gif";
+nekoG[34].src=fld2+"kaki1.gif";
+nekoG[35].src=fld2+"kaki2.gif";
+nekoG[36].src=fld2+"sleep1.gif";
+nekoG[37].src=fld2+"sleep2.gif";
+nekoG[38].src=fld2+"mati3.gif";
+
+
+var NID=0,NID2=0;
+var MX=100;
+var MY=100;
+var NX=0;
+var NY=0;
+var NCYCLE=250;
+NS=16;
+NS2=NS*NS;
+NS_2=NS>>1;
+NA=1;
+BN=0;
+if(NN4||NN6){document.captureEvents(Event.MOUSEMOVE);}
+
+
+document.onmousemove=GetM;
+function GetM(e){if(NN4||NN6){MX=e.pageX;MY=e.pageY;}
+if(IE4){MX=document.body.scrollLeft+event.clientX;MY=document.body.scrollTop+event.clientY;}}
+
+function nekomove(){
+	var DX=MX- NX;
+	var DY=MY- NY;
+	var DX2=DX*DX;
+	DY2=DY*DY;
+	DX2=(DX2==0&&DY2==0)?1:DX2;
+	var XF=(DX<0)?-1:1;
+	var YF=(DY<0)?-1:1;
+	
+	if(DX2+ DY2<NS2){
+		var NDX=DX;
+		var NDY=DY;		
+	}else{
+		var NDX=XF*Math.ceil(Math.sqrt(NS2*DX2/(DX2+DY2)));
+		var NDY=YF*Math.ceil(Math.sqrt(NS2*DY2/(DX2+DY2)));
+	}
+	if(NDX==0&&NDY==0){
+		clearInterval(NID);
+		nekostop();
+	}else{
+		var Ndirect=0;
+		if(NDY<0&&NDY+ NS_2<=0)Ndirect+=2
+		else if(NDY>1&&NDY- NS_2>=0)Ndirect+=3;
+		
+		if(NDX<0&&NDX+ NS_2<=0)Ndirect+=8
+		else if(NDX>1&&NDX- NS_2>=0)Ndirect+=12;
+		
+		NA=(NA==0)?1:0;
+		BN=Ndirect;
+		chimg((Ndirect<<1)+NA);
+		NX+=NDX;
+		NY+=NDY;
+		if(NN4){document.layers.jsneko.moveTo(NX-16,NY-35);}
+		if(IE4){document.all["jsneko"].style.left=NX- 16;document.all["jsneko"].style.top=NY- 35;}
+		
+		
+		if(NN6){
+			
+			document.getElementById("jsneko").style.left=NX- 16+"px";
+			document.getElementById("jsneko").style.top=NY- 35+"px";
+						
+		}
+		
+	}
+}
+
+
+
+
+
+function chimg(num){if(NN4){document.layers.jsneko.document.images[0].src=nekoG[num].src;}
+if(IE4){document.all.jsneko.document.images[0].src=nekoG[num].src;}
+if(NN6){document.nyan.src=nekoG[num].src;}}
+function nekostop(){NA=0;chimg(0);OLDMX=MX;OLDMY=MY;NA=0;NJC=0;NID2=setTimeout("nekojare()",NCYCLE*5);mousecheck();}
+function nekojare(){NJC++;clearTimeout(NID2);if(NJC<=10){if(NJC&1==1)chimg(33)
+else chimg(0);NID2=setTimeout("nekojare()",NCYCLE>>1);}else{NKC=0;NID2=setTimeout("nekokaki()",NCYCLE);}
+mousecheck();}
+function nekokaki(){NKC++;clearTimeout(NID2);if(NKC<=8){if(NKC&1==1)chimg(34)
+else chimg(35);NID2=setTimeout("nekokaki()",NCYCLE>>1);}else{NID2=setTimeout("nekoakubi()",NCYCLE);}
+mousecheck();}
+function nekoakubi(){clearTimeout(NID2);chimg(38);NNC=0;NID2=setTimeout("nekone()",NCYCLE<<2);mousecheck();}
+function nekone(){NNC++;clearTimeout(NID2);if(NNC&1==1)chimg(36)
+else chimg(37);NID2=setTimeout("nekone()",NCYCLE<<1);mousecheck();}
+function mousecheck(){if(OLDMX!=MX||OLDMY!=MY){clearTimeout(NID2);clearInterval(NID);nekostart();}}
+
+
+
+var NID2=setTimeout("",0);
+function nekostart(){if(NN4||IE4||NN6){clearTimeout(NID2);chimg(32);NID2=setTimeout('NID = setInterval("nekomove()",nkspd)',NCYCLE*3);}}
+
+
+
+
+
+</script>
+
+</body>
+</html>
